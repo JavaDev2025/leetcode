@@ -22,44 +22,39 @@ package com.github.alex4790354.p09TwoPointers;
 
 public class Task01LongestPalindromicSubstring {
 
-    public static String longestPalindrome(String s) {
-        if (s == null || s.length() < 2) return s;
+    // function to find the longest palindrome substring
+    static String getLongestPal(String s) {
 
-        int start = 0, maxlength = 1;
+        int n = s.length();
+        int start = 0, maxLen = 1;
+        for (int i = 0; i < n; i++) {
+            // this runs two times for both odd and even
+            // length palindromes.
+            // j = 0 means odd and j = 1 means even length
+            for (int j = 0; j <= 1; j++) {
+                int low = i;
+                int high = i + j;
 
-        for (int i = 0; i < s.length(); i++) {
-            int[] odd = expandFromCenter(s, i, i);
-            int[] even = expandFromCenter(s, i, i + 1);
-            int[] lonlger = (odd[1] - odd[0]) > (even[1] - even[0])? odd : even;
-
-            if (lonlger[1] - lonlger[0] > maxlength) {
-                start = lonlger[0];
-                maxlength = lonlger[1] - lonlger[0];
+                // expand substring while it is a palindrome
+                // and in bounds
+                while (low >= 0 && high < n && s.charAt(low) == s.charAt(high))
+                {
+                    int currLen = high - low + 1;
+                    if (currLen > maxLen) {
+                        start = low;
+                        maxLen = currLen;
+                    }
+                    low--;
+                    high++;
+                }
             }
         }
-        return s.substring(start, start + maxlength);
+        return s.substring(start, start + maxLen);
     }
 
-    // expand From Center:
-    private static int[] expandFromCenter(String s, int left, int right) {
-        while (left > 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
-            left--;
-            right++;
-        }
-        return new int[]{left + 1, right};
-    }
-
-    // Check:
     public static void main(String[] args) {
-        String s1 = "babaс";
-        String s2 = "cbbd";
-        String s3 = "a";
-        String s4 = "ac";
-
-        System.out.println("Input: " + s1 + " -> Output: " + longestPalindrome(s1));
-        System.out.println("Input: " + s2 + " -> Output: " + longestPalindrome(s2));
-        System.out.println("Input: " + s3 + " -> Output: " + longestPalindrome(s3));
-        System.out.println("Input: " + s4 + " -> Output: " + longestPalindrome(s4));
+        String s = "bbcde";
+        System.out.println(getLongestPal(s));
     }
 
 }
